@@ -16,6 +16,13 @@
       margin-top: 12px;
     }
 
+    &-close-btn {
+        position: absolute;
+        right: 0;
+        top: -8px;
+        cursor: pointer;
+    }
+
     &-colors {
       display: flex;
       justify-content: space-between;

@@ -2,6 +2,8 @@ import React from "react";
 import Badge from "../Badge/Badge";
 import Sidebar from "../Sidebar/Sidebar";
 
+import closeSvg from "../../assets/img/close.svg";
+
 import './AddButtonSidebar.scss';
 
 const AddButtonSidebar = ({ colors }) => {
@@ -33,6 +35,11 @@ const AddButtonSidebar = ({ colors }) => {
             {
                 visiablePopup && (
                     <div className="add-list__popup">
+                        <img 
+                        onClick={() => setVisiablePopup(false)}
+                        src={closeSvg} 
+                        alt="close button" 
+                        className="add-list__popup-close-btn" />
                         <input type="text" className="add-list__popup-input field" placeholder="Название списка" />
                         <div className="add-list__popup-colors">
                             {
