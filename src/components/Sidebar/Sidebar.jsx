@@ -1,14 +1,16 @@
 import React from 'react';
+import classNames from 'classnames';
+import Badge from '../Badge/Badge';
 
 import './Sidebar.scss';
 
-const Sidebar = ({ items }) => {
+const Sidebar = ({ items, onClick, isRemovable }) => {
   return (
     <ul className='list'>
       {
         items.map(obj => (
-          <li className={obj.active ? 'active' : ''}>
-            <i>{obj.icon ? obj.icon : <i className={`badge badge--${obj.color}`}></i>}</i>
+          <li onClick={onClick} key={obj.name} className={classNames(obj.className, {'active' : obj.active})}>
+            <i>{obj.icon ? obj.icon : <Badge color={obj.color} />}</i>
             <span>{obj.name}</span>
           </li>
         ))

@@ -1,10 +1,15 @@
 import React from 'react';
+import AddButtonSidebar from './components/AddButtonSidebar/AddButtonSidebar.jsx';
 import Sidebar from './components/Sidebar/Sidebar.jsx';
 
+
+import db from './assets/db.json';
 import './index.scss';
 
 
 function App() {
+  
+
   return (
     <div className='todo'>
       <div className='todo__sidebar'>
@@ -47,7 +52,10 @@ function App() {
             color: 'pink',
             name: 'Книги'
           }
-        ]} />
+        ]}
+          isRemovable
+        />
+        <AddButtonSidebar colors={db.colors}/>
       </div>
       <div className='todo__tasks'>
 
