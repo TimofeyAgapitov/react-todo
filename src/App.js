@@ -1,6 +1,7 @@
 import React from 'react';
 import AddButtonSidebar from './components/AddButtonSidebar/AddButtonSidebar.jsx';
 import Sidebar from './components/Sidebar/Sidebar.jsx';
+import Tasks from './components/Tasks/Tasks.jsx';
 
 
 import db from './assets/db.json';
@@ -8,7 +9,21 @@ import './index.scss';
 
 
 function App() {
-  
+  const [lists, setLists] = React.useState(
+    db.lists.map(item => {
+      item.color = db.colors.filter(color => color.id === item.colorId)[0].name;
+      return item;
+    })
+  );
+
+  const onAddElement = (obj) => {
+    const newList = [
+      ...lists,
+      obj
+    ];
+
+    setLists(newList);
+  }
 
   return (
     <div className='todo'>
@@ -39,26 +54,13 @@ function App() {
             active: true
           }
         ]} />
-        <Sidebar items={[
-          {
-            color: 'green',
-            name: 'Покупки'
-          },
-          {
-            color: 'blue',
-            name: 'Фронтенд'
-          },
-          {
-            color: 'pink',
-            name: 'Книги'
-          }
-        ]}
+        <Sidebar items={lists}
           isRemovable
         />
-        <AddButtonSidebar colors={db.colors}/>
+        <AddButtonSidebar onAddElement={onAddElement} colors={db.colors} />
       </div>
       <div className='todo__tasks'>
-
+        <Tasks />
       </div>
     </div>
   );

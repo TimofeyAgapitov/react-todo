@@ -6,9 +6,30 @@ import closeSvg from "../../assets/img/close.svg";
 
 import './AddButtonSidebar.scss';
 
-const AddButtonSidebar = ({ colors }) => {
+const AddButtonSidebar = ({ colors, onAddElement }) => {
     const [visiablePopup, setVisiablePopup] = React.useState(false);
     const [selectedColor, setSelectedColor] = React.useState(colors[0].id);
+    const [inputValue, setInputValue] = React.useState('');
+
+    const onClose = () => {
+        setVisiablePopup(false);
+        setInputValue('');
+        setSelectedColor(colors[0].id);
+     }
+
+    const onClickAddElementList = () => {
+        if (!inputValue) {
+            alert('Введите название задачи');
+            return;
+        }
+        let color = colors.filter(color => color.id === selectedColor)[0].name;
+        onAddElement({
+            "id": Math.random(),
+            "name": inputValue,
+            color
+        });
+        onClose();
+    }
 
     return (
         <div className="add-list">
@@ -35,25 +56,28 @@ const AddButtonSidebar = ({ colors }) => {
             {
                 visiablePopup && (
                     <div className="add-list__popup">
-                        <img 
-                        onClick={() => setVisiablePopup(false)}
-                        src={closeSvg} 
-                        alt="close button" 
-                        className="add-list__popup-close-btn" />
-                        <input type="text" className="add-list__popup-input field" placeholder="Название списка" />
+                        <img
+                            onClick={onClose}
+                            src={closeSvg}
+                            alt="close button"
+                            className="add-list__popup-close-btn" />
+                        <input
+                            value={inputValue}
+                            onChange={(e) => setInputValue(e.target.value)}
+                            type="text" className="add-list__popup-input field" placeholder="Название списка" />
                         <div className="add-list__popup-colors">
                             {
                                 colors.map((color) => (
-                                    <Badge 
-                                    onClick={() => setSelectedColor(color.id)} 
-                                    key={color.id} 
-                                    color={color.name} 
-                                    className = {selectedColor === color.id && 'active'}
+                                    <Badge
+                                        onClick={() => setSelectedColor(color.id)}
+                                        key={color.id}
+                                        color={color.name}
+                                        className={selectedColor === color.id && 'active'}
                                     />
                                 ))
                             }
                         </div>
-                        <button className="add-list__popup-button button">Добавить</button>
+                        <button onClick={onClickAddElementList} className="add-list__popup-button button">Добавить</button>
                     </div>
                 )
             }
