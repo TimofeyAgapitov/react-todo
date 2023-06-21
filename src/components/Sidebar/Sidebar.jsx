@@ -1,5 +1,7 @@
 import React from 'react';
 import classNames from 'classnames';
+import axios from 'axios';
+
 import Badge from '../Badge/Badge';
 
 import removeSvg from '../../assets/img/remove.svg';
@@ -8,7 +10,9 @@ import './Sidebar.scss';
 const Sidebar = ({ items, onClick, isRemovable, onRemove }) => {
   const removeElement = (obj) => {
     if (window.confirm('Действительно удалить?')) {
-      onRemove(obj);
+      axios.delete('http://localhost:3001/lists/' + obj.id).then(() => {
+        onRemove(obj.id);
+      });
     }
   };
 
@@ -20,7 +24,7 @@ const Sidebar = ({ items, onClick, isRemovable, onRemove }) => {
           key={obj.name}
           className={classNames(obj.className, { active: obj.active })}
         >
-          <i>{obj.icon ? obj.icon : <Badge color={obj.color} />}</i>
+          <i>{obj.icon ? obj.icon : <Badge color={obj.color.name} />}</i>
           <span>{obj.name}</span>
           {isRemovable && (
             <img

@@ -1,4 +1,6 @@
 import React from 'react';
+import axios from 'axios';
+
 import Badge from '../Badge/Badge';
 import Sidebar from '../Sidebar/Sidebar';
 
@@ -8,8 +10,15 @@ import './AddButtonSidebar.scss';
 
 const AddButtonSidebar = ({ colors, onAddElement }) => {
   const [visiablePopup, setVisiablePopup] = React.useState(false);
-  const [selectedColor, setSelectedColor] = React.useState(colors[0].id);
+  const [selectedColor, setSelectedColor] = React.useState(3);
   const [inputValue, setInputValue] = React.useState('');
+  const [isLoading, setIsLoading] = React.useState(false);
+
+  React.useEffect(() => {
+    if (Array.isArray(colors)) {
+      setSelectedColor(colors[0].id);
+    }
+  }, [colors]);
 
   const onClose = () => {
     setVisiablePopup(false);
@@ -22,13 +31,22 @@ const AddButtonSidebar = ({ colors, onAddElement }) => {
       alert('Введите название задачи');
       return;
     }
-    let color = colors.filter((color) => color.id === selectedColor)[0].name;
-    onAddElement({
-      id: Math.random(),
-      name: inputValue,
-      color,
-    });
-    onClose();
+    setIsLoading(true);
+    axios
+      .post('http://localhost:3001/lists', {
+        name: inputValue,
+        colorId: selectedColor,
+      })
+      .then((data) => {
+        const color = colors.filter((color) => color.id === selectedColor)[0]
+          .name;
+        const listObj = { ...data, color: { name: color } };
+        onAddElement(listObj);
+        onClose();
+      })
+      .finally(() => {
+        setIsLoading(false);
+      });
   };
 
   return (
@@ -96,7 +114,7 @@ const AddButtonSidebar = ({ colors, onAddElement }) => {
             onClick={onClickAddElementList}
             className="add-list__popup-button button"
           >
-            Добавить
+            {isLoading ? 'Добавление...' : 'Добавить'}
           </button>
         </div>
       )}

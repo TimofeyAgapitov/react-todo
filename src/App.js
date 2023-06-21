@@ -1,20 +1,24 @@
 import React from 'react';
-import AddButtonSidebar from './components/AddButtonSidebar/AddButtonSidebar.jsx';
-import Sidebar from './components/Sidebar/Sidebar.jsx';
-import Tasks from './components/Tasks/Tasks.jsx';
+import axios from 'axios';
+import { AddButtonSidebar, Sidebar, Tasks } from './components';
 
 import db from './assets/db.json';
 import './index.scss';
 
 function App() {
-  const [lists, setLists] = React.useState(
-    db.lists.map((item) => {
-      item.color = db.colors.filter(
-        (color) => color.id === item.colorId
-      )[0].name;
-      return item;
-    })
-  );
+  const [lists, setLists] = React.useState(null);
+  const [colors, setColors] = React.useState(null);
+
+  React.useEffect(() => {
+    axios
+      .get('http://localhost:3001/lists?_expand=color&_embed=tasks')
+      .then(({ data }) => {
+        setLists(data);
+      });
+    axios.get('http://localhost:3001/colors').then(({ data }) => {
+      setColors(data);
+    });
+  }, []);
 
   const onAddElement = (obj) => {
     const newList = [...lists, obj];
@@ -59,12 +63,20 @@ function App() {
             },
           ]}
         />
-        <Sidebar items={lists} isRemovable />
-        <AddButtonSidebar onAddElement={onAddElement} colors={db.colors} />
+        {lists ? (
+          <Sidebar
+            items={lists}
+            onRemove={(id) => {
+              const newList = lists.filter((list) => list.id === id);
+            }}
+            isRemovable
+          />
+        ) : (
+          'Загрузка...'
+        )}
+        <AddButtonSidebar onAddElement={onAddElement} colors={colors} />
       </div>
-      <div className="todo__tasks">
-        <Tasks />
-      </div>
+      <div className="todo__tasks">{lists && <Tasks list={lists[0]} />}</div>
     </div>
   );
 }
