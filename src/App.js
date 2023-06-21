@@ -59,7 +59,7 @@ function App() {
             },
           ]}
         />
-        <Sidebar items={lists} PsRemovable />
+        <Sidebar items={lists} isRemovable />
         <AddButtonSidebar onAddElement={onAddElement} colors={db.colors} />
       </div>
       <div className="todo__tasks">
