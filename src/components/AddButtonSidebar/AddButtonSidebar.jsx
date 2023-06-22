@@ -8,7 +8,7 @@ import closeSvg from '../../assets/img/close.svg';
 
 import './AddButtonSidebar.scss';
 
-const AddButtonSidebar = ({ colors, onAddElement }) => {
+const AddButtonSidebar = ({ colors, onAddListElement }) => {
   const [visiablePopup, setVisiablePopup] = React.useState(false);
   const [selectedColor, setSelectedColor] = React.useState(3);
   const [inputValue, setInputValue] = React.useState('');
@@ -41,7 +41,7 @@ const AddButtonSidebar = ({ colors, onAddElement }) => {
         const color = colors.filter((color) => color.id === selectedColor)[0]
           .name;
         const listObj = { ...data, color: { name: color } };
-        onAddElement(listObj);
+        onAddListElement(listObj);
         onClose();
       })
       .finally(() => {
@@ -83,7 +83,7 @@ const AddButtonSidebar = ({ colors, onAddElement }) => {
             name: 'Добавить список',
           },
         ]}
-        onClick={() => setVisiablePopup(true)}
+        onClickList={() => setVisiablePopup(true)}
       />
       {visiablePopup && (
         <div className="add-list__popup">

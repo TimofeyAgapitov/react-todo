@@ -11,19 +11,14 @@
       "colorId": 3
     },
     {
-      "name": "fwefewfw",
-      "colorId": 5,
+      "name": "Книги",
+      "colorId": 3,
       "id": 4
     },
     {
-      "name": "ewfwef",
-      "colorId": 7,
+      "name": "Тест по математике",
+      "colorId": 6,
       "id": 5
-    },
-    {
-      "name": "rfrfrfr",
-      "colorId": 1,
-      "id": 6
     }
   ],
   "tasks": [

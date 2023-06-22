@@ -2,12 +2,12 @@ import React from 'react';
 import axios from 'axios';
 import { AddButtonSidebar, Sidebar, Tasks } from './components';
 
-import db from './assets/db.json';
 import './index.scss';
 
 function App() {
   const [lists, setLists] = React.useState(null);
   const [colors, setColors] = React.useState(null);
+  const [activeItem, setActiveItem] = React.useState(null);
 
   React.useEffect(() => {
     axios
@@ -20,8 +20,30 @@ function App() {
     });
   }, []);
 
-  const onAddElement = (obj) => {
+  const onAddListElement = (obj) => {
     const newList = [...lists, obj];
+
+    setLists(newList);
+  };
+  const onAddTaskElement = (listId, taskObj) => {
+    const newList = lists.map((item) => {
+      if (item.id === listId) {
+        item.tasks = [...item.tasks, taskObj];
+      }
+      return item;
+    });
+
+    setLists(newList);
+  };
+
+  const onEditListTitle = (id, title) => {
+    const newList = lists.map((item) => {
+      if (item.id === id) {
+        item.name = title;
+      }
+
+      return item;
+    });
 
     setLists(newList);
   };
@@ -59,24 +81,36 @@ function App() {
                 </svg>
               ),
               name: 'Все задачи',
-              active: true,
             },
           ]}
-        />
+        />{' '}
         {lists ? (
           <Sidebar
             items={lists}
             onRemove={(id) => {
               const newList = lists.filter((list) => list.id === id);
+              setLists(newList);
             }}
+            onClickItem={(item) => {
+              setActiveItem(item);
+            }}
+            activeItem={activeItem}
             isRemovable
           />
         ) : (
           'Загрузка...'
         )}
-        <AddButtonSidebar onAddElement={onAddElement} colors={colors} />
+        <AddButtonSidebar onAddListElement={onAddListElement} colors={colors} />
       </div>
-      <div className="todo__tasks">{lists && <Tasks list={lists[0]} />}</div>
+      <div className="todo__tasks">
+        {lists && activeItem && (
+          <Tasks
+            list={activeItem}
+            onAddTaskElement={onAddTaskElement}
+            onEditTitle={onEditListTitle}
+          />
+        )}
+      </div>
     </div>
   );
 }

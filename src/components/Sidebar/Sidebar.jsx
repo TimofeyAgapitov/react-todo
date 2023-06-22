@@ -7,7 +7,14 @@ import Badge from '../Badge/Badge';
 import removeSvg from '../../assets/img/remove.svg';
 import './Sidebar.scss';
 
-const Sidebar = ({ items, onClick, isRemovable, onRemove }) => {
+const Sidebar = ({
+  items,
+  onClickList,
+  isRemovable,
+  onRemove,
+  onClickItem,
+  activeItem,
+}) => {
   const removeElement = (obj) => {
     if (window.confirm('Действительно удалить?')) {
       axios.delete('http://localhost:3001/lists/' + obj.id).then(() => {
@@ -17,15 +24,19 @@ const Sidebar = ({ items, onClick, isRemovable, onRemove }) => {
   };
 
   return (
-    <ul className="list">
+    <ul onClick={onClickList} className="list">
       {items.map((obj) => (
         <li
-          onClick={onClick}
+          onClick={onClickItem ? () => onClickItem(obj) : null}
           key={obj.name}
-          className={classNames(obj.className, { active: obj.active })}
+          className={classNames(obj.className, {
+            active: activeItem && activeItem.id === obj.id,
+          })}
         >
           <i>{obj.icon ? obj.icon : <Badge color={obj.color.name} />}</i>
-          <span>{obj.name}</span>
+          <span>
+            {obj.name} {obj.tasks && `(${obj.tasks.length})`}
+          </span>
           {isRemovable && (
             <img
               className="list__remove-icon"

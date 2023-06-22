@@ -1,17 +1,34 @@
 import React from 'react';
+import axios from 'axios';
+
+import TasksAddNewElement from './TasksAddNewElement';
+
 import editSvg from '../../assets/img/edit.svg';
 
 import './Tasks.scss';
 
-const Tasks = ({ list }) => {
+const Tasks = ({ list, onAddTaskElement, onEditTitle }) => {
+  const editTitle = () => {
+    const newTitle = window.prompt('Название списка:', list.name);
+    if (newTitle) {
+      onEditTitle(list.id, newTitle);
+      axios
+        .patch(`http://localhost:3001/lists/` + list.id, { name: newTitle })
+        .catch(() => {
+          alert('Не удалось изменить название списка');
+        });
+    }
+  };
+
   return (
     <div className="tasks">
       <h2 className="tasks__title">
         {list.name}
-        <img src={editSvg} alt="Иконка редактирования" />
+        <img onClick={editTitle} src={editSvg} alt="Иконка редактирования" />
       </h2>
 
       <div className="tasks__items">
+        {!list.tasks.length && <h2>Задачи отсутствуют</h2>}
         {list.tasks.map((task) => (
           <div key={task.id} className="tasks__items-row">
             <div className="checkbox">
@@ -38,6 +55,8 @@ const Tasks = ({ list }) => {
           </div>
         ))}
       </div>
+
+      <TasksAddNewElement list={list} onAddTaskElement={onAddTaskElement}/>
     </div>
   );
 };
