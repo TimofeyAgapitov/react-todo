@@ -1,5 +1,7 @@
 import React from 'react';
 import axios from 'axios';
+import { Route } from 'react-router-dom';
+
 import { AddButtonSidebar, Sidebar, Tasks } from './components';
 
 import './index.scss';
@@ -35,7 +37,6 @@ function App() {
 
     setLists(newList);
   };
-
   const onEditListTitle = (id, title) => {
     const newList = lists.map((item) => {
       if (item.id === id) {
@@ -81,13 +82,14 @@ function App() {
                 </svg>
               ),
               name: 'Все задачи',
+              active: true,
             },
           ]}
         />{' '}
         {lists ? (
           <Sidebar
             items={lists}
-            onRemove={(id) => {
+            onRemoveItem={(id) => {
               const newList = lists.filter((list) => list.id === id);
               setLists(newList);
             }}

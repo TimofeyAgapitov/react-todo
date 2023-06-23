@@ -11,14 +11,14 @@ const Sidebar = ({
   items,
   onClickList,
   isRemovable,
-  onRemove,
+  onRemoveItem,
   onClickItem,
   activeItem,
 }) => {
   const removeElement = (obj) => {
     if (window.confirm('Действительно удалить?')) {
       axios.delete('http://localhost:3001/lists/' + obj.id).then(() => {
-        onRemove(obj.id);
+        onRemoveItem(obj.id);
       });
     }
   };
@@ -30,7 +30,9 @@ const Sidebar = ({
           onClick={onClickItem ? () => onClickItem(obj) : null}
           key={obj.name}
           className={classNames(obj.className, {
-            active: activeItem && activeItem.id === obj.id,
+            active: obj.active
+              ? obj.active
+              : activeItem && activeItem.id === obj.id,
           })}
         >
           <i>{obj.icon ? obj.icon : <Badge color={obj.color.name} />}</i>
