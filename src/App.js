@@ -1,6 +1,5 @@
 import React from 'react';
 import axios from 'axios';
-import { Route } from 'react-router-dom';
 
 import { AddButtonSidebar, Sidebar, Tasks } from './components';
 
@@ -48,6 +47,49 @@ function App() {
 
     setLists(newList);
   };
+  const onRemoveTaskElement = (listId, taskId) => {
+    if (window.confirm('Вы действительно хотите удалить эту задачу?')) {
+      const newList = lists.map((item) => {
+        if (item.id === listId) {
+          item.tasks = item.tasks.filter((task) => task.id !== taskId);
+        }
+        return item;
+      });
+      setLists(newList);
+
+      axios.delete(`http://localhost:3001/tasks/` + taskId).catch(() => {
+        alert('Не удалось удалить задачу');
+      });
+    }
+  };
+
+  const onEditTaskElement = (listId, taskObj) => {
+    const newTaskText = window.prompt('Новый текст задачи', taskObj.text);
+
+    if (!newTaskText) {
+      return;
+    }
+
+    const newList = lists.map((list) => {
+      if (list.id === listId) {
+        list.tasks = list.tasks.map((task) => {
+          if (task.id === taskObj.id) {
+            task.text = newTaskText;
+          }
+          return task;
+        });
+      }
+      return list;
+    });
+    setLists(newList);
+    axios
+      .patch(`http://localhost:3001/tasks/` + taskObj.id, {
+        text: newTaskText,
+      })
+      .catch(() => {
+        alert('Не удалось изменить текст задачи');
+      });
+  };
 
   return (
     <div className="todo">
@@ -82,16 +124,15 @@ function App() {
                 </svg>
               ),
               name: 'Все задачи',
-              active: true,
             },
           ]}
-        />{' '}
+        />
         {lists ? (
           <Sidebar
             items={lists}
             onRemoveItem={(id) => {
-              const newList = lists.filter((list) => list.id === id);
-              setLists(newList);
+              const newLists = lists.filter((item) => item.id !== id);
+              setLists(newLists);
             }}
             onClickItem={(item) => {
               setActiveItem(item);
@@ -110,6 +151,8 @@ function App() {
             list={activeItem}
             onAddTaskElement={onAddTaskElement}
             onEditTitle={onEditListTitle}
+            onRemoveTaskElement={onRemoveTaskElement}
+            onEditTaskElement={onEditTaskElement}
           />
         )}
       </div>

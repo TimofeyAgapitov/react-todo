@@ -25,10 +25,10 @@ const Sidebar = ({
 
   return (
     <ul onClick={onClickList} className="list">
-      {items.map((obj) => (
+      {items.map((obj, index) => (
         <li
+          key={index}
           onClick={onClickItem ? () => onClickItem(obj) : null}
-          key={obj.name}
           className={classNames(obj.className, {
             active: obj.active
               ? obj.active

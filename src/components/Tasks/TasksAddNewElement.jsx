@@ -17,7 +17,7 @@ const TasksAddNewElement = ({ list, onAddTaskElement }) => {
     const obj = {
       listId: list.id,
       text: inputValue,
-      complete: true,
+      complete: false,
     };
     setIsLoading(true);
     axios
@@ -26,7 +26,8 @@ const TasksAddNewElement = ({ list, onAddTaskElement }) => {
         onAddTaskElement(data.id, obj);
         toggleFormVisiable();
       })
-      .catch(() => {
+      .catch((e) => {
+        console.log(e);
         alert('Ошибка при добавлении задачи');
       })
       .finally(() => {
